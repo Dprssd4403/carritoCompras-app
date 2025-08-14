@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  StatusBar,
-  Text,
-  View,
-  Alert,
-} from "react-native";
+import { StatusBar, Text, View, Alert } from "react-native";
 import { TitleComponent } from "../components/TitleComponent";
 import { PRIMARY_COLOR } from "../commons/constants";
 import { BodyComponent } from "../components/BodyComponent";
@@ -14,25 +9,20 @@ import { ButtonComponent } from "../components/ButtonComponent";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { TouchableOpacity } from "react-native";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import { User } from "../navigator/StackNavigator";
+
+//interface para las propiedades
+interface Props {
+  users: User[]; //arreglo con la lista de usuarios
+}
 
 //interface para el objeto del formulario
 interface FormLogin {
   username: string;
   password: string;
 }
-//interface para los objetos de mi arreglo users
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  password: string;
-}
-//arreglo con la lista de usuarios
-const users: User[] = [
-  { id: 1, name: "Christopher", username: "Dprssd", password: "1727053231" },
-  { id: 2, name: "Carlos", username: "caguas", password: "654321" },
-];
-export const LoginScreen = () => {
+
+export const LoginScreen = ({ users }: Props) => {
   //hook useState para manejar el estado de nuestro formulario
   const [formLogin, setFormLogin] = useState<FormLogin>({
     username: "",
@@ -58,7 +48,7 @@ export const LoginScreen = () => {
         user.username == formLogin.username &&
         user.password == formLogin.password
     );
-    return undefined;
+    return existUser;
   };
 
   //funcion permitir iniciar sesion
@@ -71,7 +61,8 @@ export const LoginScreen = () => {
       Alert.alert("Error", "Usuario y/o contraseña incorrectos");
       return;
     }
-    console.log(formLogin);
+    //console.log(formLogin);
+    navigation.dispatch(CommonActions.navigate({ name: "Home" }));
   };
 
   return (
@@ -105,9 +96,15 @@ export const LoginScreen = () => {
             onPress={() => setHiddenPassword(!hiddenPassword)}
           />
         </View>
-        <ButtonComponent textButton="Iniciar" handleLogin={handleLogin} />
-        <TouchableOpacity onPress={()=> navigation.dispatch(CommonActions.navigate({name:'Register'}))}>
-          <Text style={styles.textRedirect}>No tienes una cuenta? Regístrate ahora</Text>
+        <ButtonComponent textButton="Iniciar" onPress={handleLogin} />
+        <TouchableOpacity
+          onPress={() =>
+            navigation.dispatch(CommonActions.navigate({ name: "Register" }))
+          }
+        >
+          <Text style={styles.textRedirect}>
+            No tienes una cuenta? Regístrate ahora
+          </Text>
         </TouchableOpacity>
       </BodyComponent>
     </View>
